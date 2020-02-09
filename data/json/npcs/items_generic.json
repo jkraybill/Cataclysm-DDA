@@ -466,6 +466,8 @@
       [ "cornbread", 1 ],
       [ "corndogs_frozen", 2 ],
       [ "cookbook", 2 ],
+      [ "cookbook_baking", 1 ],
+      [ "cookbook_bread", 1 ],
       [ "cookbook_human", 1 ],
       [ "cookbook_italian", 1 ],
       [ "cookies", 3 ],

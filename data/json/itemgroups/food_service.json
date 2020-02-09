@@ -757,6 +757,8 @@
       [ "cooking_oil2", 20 ],
       [ "cookbook", 8 ],
       [ "cookbook_italian", 9 ],
+      [ "cookbook_baking", 4 ],
+      [ "cookbook_bread", 4 ],
       [ "cornmeal", 3 ],
       [ "knife_steak", 15 ],
       [ "chilly-p", 15 ],
