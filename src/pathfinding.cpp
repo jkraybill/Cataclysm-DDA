@@ -418,39 +418,8 @@ std::vector<tripoint> map::route( const tripoint &f, const tripoint &t,
                     }
                 }
 
-                if( trapavoid && p_special & PF_TRAP ) {
-                    const auto &ter_trp = terrain.trap.obj();
-                    const auto &trp = ter_trp.is_benign() ? tile.get_trap_t() : ter_trp;
-                    if( !trp.is_benign() ) {
-                        // For now make them detect all traps
-                        if( has_zlevels() && terrain.has_flag( TFLAG_NO_FLOOR ) ) {
-                            // Special case - ledge in z-levels
-                            // Warning: really expensive, needs a cache
-                            if( valid_move( p, tripoint( p.xy(), p.z - 1 ), false, true ) ) {
-                                tripoint below( p.xy(), p.z - 1 );
-                                if( !has_flag( TFLAG_NO_FLOOR, below ) ) {
-                                    // Otherwise this would have been a huge fall
-                                    auto &layer = pf.get_layer( p.z - 1 );
-                                    // From cur, not p, because we won't be walking on air
-                                    pf.add_point( layer.gscore[parent_index] + 10,
-                                                  layer.score[parent_index] + 10 + 2 * rl_dist( below, t ),
-                                                  cur, below );
-                                }
-
-                                // Close p, because we won't be walking on it
-                                layer.state[index] = ASL_CLOSED;
-                                continue;
-                            }
-                        } else if( trapavoid ) {
-                            // Otherwise it's walkable
-                            newg += 500;
-                        }
-                    }
-                }
-
                 if( sharpavoid && p_special & PF_SHARP ) {
-                    // Avoid sharp things
-                    newg += 500;
+                    layer.state[index] = ASL_CLOSED; // Avoid sharp things
                 }
 
             }
