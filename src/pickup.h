@@ -18,7 +18,20 @@ namespace Pickup
  */
 bool do_pickup( std::vector<item_location> &targets, std::vector<int> &quantities,
                 bool autopickup );
+/**
+ * Returns true if the item is owned by the player, or they consent to stealing.
+ * If remember_thief_mode is true, the user's response to thieving is cached
+ * until reset_thief_confirmation is called.
+ */
+bool confirm_ownership_intent( item &newit, bool remember_thief_mode );
+
 bool query_thief();
+
+/**
+ * If confirm_ownership_intent was called with remember_thief_mode true, this
+ * must be called at the end of a turn / action to remember/forget thief preference.
+ */
+void reset_thief_confirmation();
 
 enum from_where : int {
     from_cargo = 0,

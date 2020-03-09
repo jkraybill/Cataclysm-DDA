@@ -41,6 +41,7 @@
 #include "options.h"
 #include "output.h"
 #include "overmap_ui.h"
+#include "pickup.h"
 #include "player.h"
 #include "popup.h"
 #include "ranged.h"
@@ -1151,7 +1152,7 @@ static void wear()
     avatar &u = g->u;
     item_location loc = game_menus::inv::wear( u );
 
-    if( loc ) {
+    if( loc && Pickup::confirm_ownership_intent( *loc.get_item(), false ) ) {
         u.wear( u.i_at( loc.obtain( u ) ) );
     } else {
         add_msg( _( "Never mind." ) );
@@ -1175,15 +1176,14 @@ static void read()
     avatar &u = g->u;
     // Can read items from inventory or within one tile (including in vehicles)
     item_location loc = game_menus::inv::read( u );
-
-    if( loc ) {
+    item the_book = *loc.get_item();
+    if( loc && Pickup::confirm_ownership_intent( the_book, false ) ) {
         if( loc->type->can_use( "learn_spell" ) ) {
-            item spell_book = *loc.get_item();
-            spell_book.get_use( "learn_spell" )->call( u, spell_book, spell_book.active, u.pos() );
+            the_book.get_use( "learn_spell" )->call( u, the_book, the_book.active, u.pos() );
         } else {
             // calling obtain() invalidates the item pointer
             // TODO: find a way to do this without an int index
-            u.read( u.i_at( loc.obtain( u ) ) );
+            u.read_book( u.i_at( loc.obtain( u ) ) );
         }
     } else {
         add_msg( _( "Never mind." ) );

@@ -213,6 +213,33 @@ bool Pickup::query_thief()
     return false;
 }
 
+void Pickup::reset_thief_confirmation()
+{
+    if( g->u.get_value( "THIEF_MODE_KEEP" ) != "YES" ) {
+        g->u.set_value( "THIEF_MODE", "THIEF_ASK" );
+    }
+}
+
+bool Pickup::confirm_ownership_intent( item &newit, bool remember_thief_mode )
+{
+    if( !newit.is_owned_by( g->u, true ) ) {
+        // Has the player given input on if stealing is ok?
+        if( g->u.get_value( "THIEF_MODE" ) == "THIEF_ASK" ) {
+            Pickup::query_thief();
+        }
+        if( g->u.get_value( "THIEF_MODE" ) == "THIEF_HONEST" ) {
+            if ( !remember_thief_mode ) {
+                Pickup::reset_thief_confirmation();
+            }
+            return false; // we are permanently or temporarily honest
+        }
+    }
+    if ( !remember_thief_mode ) {
+        Pickup::reset_thief_confirmation();
+    }
+    return true;
+}
+
 // Returns false if pickup caused a prompt and the player selected to cancel pickup
 bool pick_one_up( item_location &loc, int quantity, bool &got_water, bool &offered_swap,
                   PickupMap &mapPickup, bool autopickup )
@@ -233,14 +260,8 @@ bool pick_one_up( item_location &loc, int quantity, bool &got_water, bool &offer
 
     const auto wield_check = u.can_wield( newit );
 
-    if( !newit.is_owned_by( g->u, true ) ) {
-        // Has the player given input on if stealing is ok?
-        if( u.get_value( "THIEF_MODE" ) == "THIEF_ASK" ) {
-            Pickup::query_thief();
-        }
-        if( u.get_value( "THIEF_MODE" ) == "THIEF_HONEST" ) {
-            return true; // Since we are honest, return no problem before picking up
-        }
+    if( !Pickup::confirm_ownership_intent( newit, true ) ) {
+        return true; // Since we are honest, return no problem before picking up
     }
     if( newit.invlet != '\0' &&
         u.invlet_to_position( newit.invlet ) != INT_MIN ) {

@@ -3969,7 +3969,7 @@ void player::use( item_location loc )
     } else if( used.is_book() ) {
         // TODO: Handle this with dynamic dispatch.
         if( avatar *u = as_avatar() ) {
-            u->read( used );
+            u->read_book( used );
         }
     } else if( used.type->has_use() ) {
         invoke_item( &used, loc.position() );

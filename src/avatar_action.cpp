@@ -28,6 +28,7 @@
 #include "npc.h"
 #include "options.h"
 #include "output.h"
+#include "pickup.h"
 #include "projectile.h"
 #include "ranged.h"
 #include "translations.h"
@@ -929,9 +930,7 @@ void avatar_action::eat( avatar &you, item_location loc )
             loc.remove_item();
         }
     }
-    if( g->u.get_value( "THIEF_MODE_KEEP" ) != "YES" ) {
-        g->u.set_value( "THIEF_MODE", "THIEF_ASK" );
-    }
+    Pickup::reset_thief_confirmation();
 }
 
 void avatar_action::plthrow( avatar &you, item_location loc,

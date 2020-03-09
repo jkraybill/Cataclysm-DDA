@@ -55,6 +55,7 @@
 #include "optional.h"
 #include "output.h"
 #include "pathfinding.h"
+#include "pickup.h"
 #include "pimpl.h"
 #include "player_activity.h"
 #include "rng.h"
@@ -341,7 +342,7 @@ int avatar::time_to_read( const item &book, const player &reader, const player *
  * str_values: Parallel to values, these contain the learning penalties (as doubles in string form) as follows:
  *             Experience gained = Experience normally gained * penalty
  */
-bool avatar::read( item &it, const bool continuous )
+bool avatar::read_book( item &it, const bool continuous )
 {
     if( it.is_null() ) {
         add_msg( m_info, _( "Never mind." ) );
@@ -868,7 +869,7 @@ void avatar::do_read( item &book )
 
     if( continuous ) {
         activity.set_to_null();
-        read( book, true );
+        read_book( book, true );
         if( activity ) {
             return;
         }
